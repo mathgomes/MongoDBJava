@@ -1,0 +1,182 @@
+
+db.runCommand( {
+   collMod: "LE01ESTADO",
+   validator: { "NOME": { $exists: true } },
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE02CIDADE",
+   validator: { 
+   		$and: [ 
+   			{ "_id.NOME": { $exists: true } }, 
+   			{ "_id.SIGLAESTADO": { 	$exists: true } }, 
+   			{ "POPULACAO": { $exists: true } }, 
+   			{"POPULACAO" : {$gte : 0} } 
+   		] 
+   	},
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE03ZONA",
+   validator: { 
+   		"NRODEURNASRESERVAS": { $exists: true } 
+   },
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE04BAIRRO",
+   validator: { 
+   		$and: [ 
+   			{ "_id.NOME": { $exists: true } }, 
+   			{ "_id.NOMECIDADE": { $exists: true } }, 
+   			{ "_id.SIGLAESTADO": { $exists: true } }, 
+   			{ "NROZONA": { $exists: true } } 
+   		] 
+   	},
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE05URNA",
+   validator: {
+   		"ESTADO" : { $in : ["funcional","manutencao"] } 
+   },
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE06SESSAO",
+   validator: { 
+   		$and: [ 
+   			{ "_id.NROSESSAO": { $exists: true } }, 
+   			{ "NSERIAL": { $exists: true } } 
+   		] 
+   	},
+   validationLevel: "moderate"
+} )
+db.runCommand( {
+   collMod: "LE07PARTIDO",
+   validator: { "NOME": { $exists: true } },
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE08CANDIDATO",
+   validator: { 
+   		$and: [
+   			{"TIPO": { $exists: true }},
+   			{"NOME": { $exists: true }},
+   			{$or: [
+   				{$and: [
+   					{"TIPO" : "politico"},
+   					{"SIGLAPARTIDO": { $exists: true }},
+   					{"CPF": { $exists: true }}
+   				]},
+   				{$and: [
+   					{"TIPO" : "especial"},
+   					{"SIGLAPARTIDO": { $exists: false }},
+   					{"CPF": { $exists: false }},
+   					{"IDADE": { $exists: false }},
+   					{"APELIDO": { $exists: false }}
+   				]}
+   			]},
+   		]
+   },
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE09CARGO",
+   validator: { 
+   		$and: [ 
+   			{"POSSUIVICE": { $exists: true }}, 
+   			{"ANOBASE": { $exists: true }},
+   			{"ANOSMANDATO": { $exists: true }},
+   			{"NOMEDESCRITIVO": { $exists: true }},
+   			{"NRODECADEIRAS" : {$gte : 0} },
+   			{"ANOSMANDATO" : {$gte : 0} },
+   			{"ANOBASE" : {$gte : 1985} },
+   			{"ANOBASE" : {$lte : 2100} },
+   			{"POSSUIVICE" : { $in : [0,1] } },
+   			{"ESFERA" : { $in : ["F","E","M"] } },
+   			{ 
+   				$or: [
+   					{$and: [
+   						{"ESFERA" : "F"},
+   						{"NOMECIDADE": { $exists: false }},
+   						{"SIGLAESTADO": { $exists: false }}
+   					]},
+   					{$and: [
+   						{"ESFERA" : "E"},
+   						{"NOMECIDADE": { $exists: false }},
+   						{"SIGLAESTADO": { $exists: true }}
+   					]},
+   					{$and: [
+   						{"ESFERA" : "M"},
+   						{"NOMECIDADE": { $exists: true }},
+   						{"SIGLAESTADO": { $exists: true }}
+   					]}
+   				]
+   			},
+
+   		]
+
+   },
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE10CANDIDATURA",
+   validator: { 
+   		$and : [
+   			{"CODCARGO": { $exists: false }},
+   			{"ANO": { $exists: false }},
+   			{"NROCAND": { $exists: false }},
+   			{"ANO": {$gte : 1985}},
+   			{"ANO": {$lte : 2100}}
+   		]
+   },
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE11PLEITO",
+   validator: { 
+   		$and : [
+   			{"_id.NROSESSAO": { $exists: true }},
+   			{"_id.NROZONA": { $exists: true }},
+   			{"_id.CODCARGO": { $exists: true }},
+   			{"_id.ANO": { $exists: true }},
+   			{"_id.NROCAND": { $exists: true }},
+   			{"TOTAL": { $exists: true }}
+   		]
+   },
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE12PESQUISA",
+   validator: { 
+   		$and : [
+   			{"PERIODOFIM": { $exists: true }},
+   			{"PERIODOINICIO": { $exists: true }},
+   			{"PERIODOFIM": { $gte: "PERIODOINICIO" }}
+   		]
+   },
+   validationLevel: "moderate"
+} )
+
+db.runCommand( {
+   collMod: "LE13INTENCAODEVOTO",
+   validator: { 
+   		$and : [
+   			{"_id.REGPESQUISA": { $exists: true }},
+   			{"_id.REGCANDID": { $exists: true }},
+   			{"TOTAL": { $exists: true }}
+   		]
+   },
+   validationLevel: "moderate"
+} )
