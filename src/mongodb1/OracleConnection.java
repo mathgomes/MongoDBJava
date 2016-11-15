@@ -76,7 +76,7 @@ public class OracleConnection {
         try {
             s = "SELECT COLS.COLUMN_NAME FROM USER_CONSTRAINTS CONS, USER_CONS_COLUMNS COLS" +
                     " WHERE COLS.TABLE_NAME = " + "'" + table + "'" +
-                    " AND (CONS.CONSTRAINT_TYPE = 'P' OR CONS.CONSTRAINT_TYPE = 'F')" +
+                    " AND (CONS.CONSTRAINT_TYPE = 'P' OR CONS.CONSTRAINT_TYPE = 'U')" +
                     " AND CONS.CONSTRAINT_NAME = COLS.CONSTRAINT_NAME";
             rs = stmtScrollable.executeQuery(s);
             rs.last();
