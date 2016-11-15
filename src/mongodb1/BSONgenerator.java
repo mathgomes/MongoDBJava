@@ -1,6 +1,5 @@
 package mongodb1;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -100,4 +99,27 @@ public class BSONgenerator {
         writer.write("}");
     }
 
+    public void IndexCreation(String tabela, String[] chaves) {
+        if(chaves.length == 0)
+            return;
+
+        int i = 0;
+        String command;
+        command = "db." + tabela + ".createIndex( { ";
+
+        do{
+            if(i >= 1)
+                command = command + ", ";
+
+            command = command + chaves[i] + ": 1";
+            i++;
+        } while (i < (chaves.length-1));
+
+        if(chaves.length >= 2) {
+            command = command + ", " + chaves[(chaves.length - 1)] + ": 1 } )";
+        } else
+            command = command + " } )";
+
+        System.out.println(command);
+    }
 }

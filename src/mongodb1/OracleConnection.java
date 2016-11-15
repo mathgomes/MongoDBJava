@@ -16,6 +16,7 @@ public class OracleConnection {
 
     private Connection connection;
     private Statement stmt;
+    private Statement stmtScrollable;
     private ResultSet rs;
     private ResultSet rs2;
     private Vector<String> tableNames;
@@ -40,6 +41,7 @@ public class OracleConnection {
                     "a8532321",
                     "a8532321");
             stmt = connection.createStatement();
+            stmtScrollable = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             return true;
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
@@ -65,6 +67,32 @@ public class OracleConnection {
             System.out.println(ex.getMessage());
         }
 
+    }
+
+    public String[] displayPKName(String table){
+        String s;
+        String[] retorno = new String[1]; //So pra conseguir inicializar.
+        int number;
+        try {
+            s = "SELECT COLS.COLUMN_NAME FROM USER_CONSTRAINTS CONS, USER_CONS_COLUMNS COLS" +
+                    " WHERE COLS.TABLE_NAME = " + "'" + table + "'" +
+                    " AND (CONS.CONSTRAINT_TYPE = 'P' OR CONS.CONSTRAINT_TYPE = 'F')" +
+                    " AND CONS.CONSTRAINT_NAME = COLS.CONSTRAINT_NAME";
+            rs = stmtScrollable.executeQuery(s);
+            rs.last();
+            number = rs.getRow();
+            rs.beforeFirst();
+            retorno = new String[number];
+
+            number = 0;
+            while(rs.next()) {
+                retorno[number] = rs.getString(1);
+                number++;
+            }
+        } catch (Exception e) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        }
+        return retorno;
     }
 
     public void retrieveColumnNames(String name) {
