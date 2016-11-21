@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Objects;
 import java.util.Vector;
+import java.util.Random;
 
 public class BSONgenerator {
 
@@ -126,5 +127,39 @@ public class BSONgenerator {
 
         writer2.write(command + "\n");
         writer2.flush();
+    }
+
+    public void insertRandomTuples(int numOfTuples) {
+        int i;
+        String command;
+        command = "db.testManyTuples.insertMany( [";
+        for (i = 0; i < numOfTuples; i++){
+             command = command + "{ attr1 : \"" + randomString(2000) + "\"," +
+                                    " attr2 : \"" + randomString(2000) + "\"," +
+                                    " attr3 : \"" + randomString(2000) + "\"," +
+                                    " attr4 : \"" + randomString(2000) + "\"," +
+                                    " attr5 : \"" + randomString(2000) + "\"," +
+                                    " attr6 : \"" + randomString(2000) + "\"," +
+                                    " attr7 : \"" + randomString(2000) + "\"," +
+                                    " attr8 : \"" + randomString(2000) + "\"," +
+                                    " attr9 : \"" + randomString(2000) + "\"," +
+                                    " attr10 : \"" + randomString(2000) + "\" }";
+            if (i < (numOfTuples-1))
+                command = command + ", ";
+        }
+        command = command + " ] )";
+        System.out.println(command);
+    }
+
+    public String randomString(int size){
+        int i;
+        String t;
+        t = "1";
+        Random rd = new Random();
+        for (i = 1; i < size; i++) {
+            t = t + rd.nextInt(9);
+        }
+
+        return t;
     }
 }

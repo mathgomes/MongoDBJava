@@ -67,7 +67,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BSONgenerator.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="BSONgenerator.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/mongodb1/BSONgenerator.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="418">
@@ -1044,6 +1044,8 @@
           <caret line="133" column="0" selection-start-line="133" selection-start-column="0" selection-end-line="133" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#758#759#0" expanded="true" />
+            <element signature="e#792#793#0" expanded="true" />
           </folding>
         </state>
       </provider>
