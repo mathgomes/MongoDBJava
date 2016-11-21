@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,29 +16,25 @@ public class QueryBuilderGUI {
 
 
     private JFrame j;
-    private JPanel pPainelDeCima;
-    private JPanel pPainelDeBaixo;
     private JComboBox<String> operatorsBox;
     private JButton queryButton;
     private JTextArea jtAreaDeStatus;
-    private JPanel panel;
-    private JPanel painelInsercaoDeDados;
     private JPanel painelInsercaoDeDadosAux;
     private JTextArea queryArea;
-    private JScrollPane querybar;
-    private JLabel querylabel;
     private JComboBox tableNamesBox;
     private JButton tableNamesButton;
     private JButton operatorButton;
-    private JPanel painelExibicaoDeDados;
     private JTextArea displayArea;
-    private JScrollPane displayAreascroll;
     private MongoConnection c;
-    private Vector<String> operators;
+
     private JButton executeOperator = new JButton("Apply");
     private JComboBox<String> jc;
     private JTextArea area;
+    private Vector<JTextArea> areaVec = new Vector<>();
+    private JTextArea argCounter = new JTextArea();
     private boolean[] index = new boolean[6];
+    private JButton executeOperatorAux = new JButton("Choose");
+    private JComboBox<String> jcbExists = new JComboBox<>();
 
 
     private QueryBuilderGUI () {
@@ -48,19 +45,15 @@ public class QueryBuilderGUI {
         j.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         /*Painel da parte superior (north) - com combobox e outras informações*/
-        pPainelDeCima = new JPanel(new FlowLayout());
+        JPanel pPainelDeCima = new JPanel(new FlowLayout());
         j.add(pPainelDeCima, BorderLayout.NORTH);
 
         queryArea = new JTextArea(2,15);
         Font bigFont = queryArea.getFont().deriveFont(Font.PLAIN, 20f);
         queryArea.setFont(bigFont);
-        //querybar = new JScrollBar(JScrollBar.HORIZONTAL);
-        //BoundedRangeModel brm = queryArea.getHorizontalVisibility();
-        //querybar.setModel(brm);
         queryArea.setText("{}");
-        querybar = new JScrollPane(queryArea);
-        //querybar.setVerticalScrollBarPolicy(ScrollPaneConstants);
-        querylabel = new JLabel("Query");
+        JScrollPane querybar = new JScrollPane(queryArea);
+        JLabel querylabel = new JLabel("Query");
 
         queryButton = new JButton("Execute");
 
@@ -70,7 +63,7 @@ public class QueryBuilderGUI {
         pPainelDeCima.add(queryButton);
 
         /*Painel da parte inferior (south) - com área de status*/
-        pPainelDeBaixo = new JPanel();
+        JPanel pPainelDeBaixo = new JPanel();
         j.add(pPainelDeBaixo, BorderLayout.SOUTH);
         jtAreaDeStatus = new JTextArea();
         bigFont = jtAreaDeStatus.getFont().deriveFont(Font.PLAIN, 16f);
@@ -79,7 +72,7 @@ public class QueryBuilderGUI {
         pPainelDeBaixo.add(jtAreaDeStatus);
 
         /*Painel tabulado na parte central (CENTER)*/
-        panel = new JPanel();
+        JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createLineBorder(Color.black));
         panel.setLayout(new GridLayout(2,1));
         j.add(panel,BorderLayout.CENTER);
@@ -88,7 +81,7 @@ public class QueryBuilderGUI {
 
 
         /*Tab de exibicao*/
-        painelInsercaoDeDados = new JPanel();
+        JPanel painelInsercaoDeDados = new JPanel();
         painelInsercaoDeDados.setBorder(BorderFactory.createLineBorder(Color.black));
 
         //painelInsercaoDeDados.setLayout(new BoxLayout(painelInsercaoDeDados,BoxLayout.Y_AXIS));
@@ -99,7 +92,7 @@ public class QueryBuilderGUI {
         tableNamesBox = new JComboBox();
 
         String[] operators2 = new String[14];
-        operators = new Vector<>();
+        Vector<String> operators = new Vector<>();
         operators2[6] = "$nin";  operators2[13] = "$eq";
         operators2[0] = "$gt";   operators2[7] = "$or";
         operators2[1] = "$gte";   operators2[8] = "$and";
@@ -129,20 +122,13 @@ public class QueryBuilderGUI {
         panel.add(painelInsercaoDeDados);
 
 
-        painelExibicaoDeDados = new JPanel(new GridLayout());
+        JPanel painelExibicaoDeDados = new JPanel(new GridLayout());
 
         displayArea = new JTextArea(2,15);
         bigFont = displayArea.getFont().deriveFont(Font.PLAIN, 20f);
         displayArea.setFont(bigFont);
-        //querybar = new JScrollBar(JScrollBar.HORIZONTAL);
-        //BoundedRangeModel brm = queryArea.getHorizontalVisibility();
-        //querybar.setModel(brm);
-        displayAreascroll = new JScrollPane(displayArea);
-        //querybar.setVerticalScrollBarPolicy(ScrollPaneConstants);
-        //jt = new JTable(tableModel);
-        //JScrollPane jc1 = new JScrollPane(jt);
+        JScrollPane displayAreascroll = new JScrollPane(displayArea);
         painelExibicaoDeDados.setBorder(BorderFactory.createLineBorder(Color.black));
-        //painelExibicaoDeDados.add(jc1);
         painelExibicaoDeDados.add(displayAreascroll);
         panel.add(painelExibicaoDeDados);
 
@@ -191,22 +177,76 @@ public class QueryBuilderGUI {
                 }
                 else if(Objects.equals(selected, "$in") || Objects.equals(selected, "$nin") ) {
 
+                    jc = new JComboBox<>(fields);
+                    JLabel l = new JLabel("Escolha o atributo");
+                    painelInsercaoDeDadosAux.add(l);
+                    painelInsercaoDeDadosAux.add(jc);
+
+                    JLabel l2 = new JLabel("Escolha quantos valores");
+                    argCounter = new JTextArea(1,3);
+                    painelInsercaoDeDadosAux.add(l2);
+                    painelInsercaoDeDadosAux.add(argCounter);
+
+                    painelInsercaoDeDadosAux.add(executeOperatorAux);
+                    j.setVisible(true);
                     index[1] = true;
                 }
                 else if(Objects.equals(selected, "$or") || Objects.equals(selected, "$and") ||
                             Objects.equals(selected, "$nor") ) {
 
+                    JLabel l2 = new JLabel("Escolha quantas condições");
+                    argCounter = new JTextArea(1,3);
+                    painelInsercaoDeDadosAux.add(l2);
+                    painelInsercaoDeDadosAux.add(argCounter);
+                    painelInsercaoDeDadosAux.add(executeOperator);
+                    j.setVisible(true);
                     index[2] = true;
                 }
                 else if (Objects.equals(selected, "$not")) {
-
+                    // not implemented
                     index[3] = true;
                 }
                 else if (Objects.equals(selected, "$exists")) {
+                    jcbExists.removeAll();
+                    jc = new JComboBox<>(fields);
+                    JLabel l = new JLabel("Escolha o atributo");
+                    painelInsercaoDeDadosAux.add(l);
+                    painelInsercaoDeDadosAux.add(jc);
+
+                    JLabel l2 = new JLabel("Escolha o valor");
+                    jcbExists.addItem("true");
+                    jcbExists.addItem("false");
+
+                    painelInsercaoDeDadosAux.add(l2);
+                    painelInsercaoDeDadosAux.add(jcbExists);
+
+                    painelInsercaoDeDadosAux.add(executeOperator);
+                    j.setVisible(true);
 
                     index[4] = true;
                 }
                 else if (Objects.equals(selected, "$type") ) {
+                    jcbExists.removeAll();
+                    jc = new JComboBox<>(fields);
+                    JLabel l = new JLabel("Escolha o atributo");
+                    painelInsercaoDeDadosAux.add(l);
+                    painelInsercaoDeDadosAux.add(jc);
+
+                    JLabel l2 = new JLabel("Escolha o tipo");
+                    jcbExists.addItem("double");    jcbExists.addItem("null");
+                    jcbExists.addItem("string");    jcbExists.addItem("regex");
+                    jcbExists.addItem("object");    jcbExists.addItem("int");
+                    jcbExists.addItem("array");     jcbExists.addItem("long");
+                    jcbExists.addItem("binData");   jcbExists.addItem("minKey");
+                    jcbExists.addItem("objectId");  jcbExists.addItem("maxKey");
+                    jcbExists.addItem("bool");      jcbExists.addItem("timestamp");
+                    jcbExists.addItem("date");
+
+                    painelInsercaoDeDadosAux.add(l2);
+                    painelInsercaoDeDadosAux.add(jcbExists);
+
+                    painelInsercaoDeDadosAux.add(executeOperator);
+                    j.setVisible(true);
 
                     index[5] = true;
                 }
@@ -218,9 +258,7 @@ public class QueryBuilderGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selected = (String)tableNamesBox.getSelectedItem();
-                //queryArea.setText("db." + selected + ".find()");
                 jtAreaDeStatus.setText("Query será executada na tabela " + selected);
-                //queryArea.insert("db." + selected + ".find()",queryArea.getCaretPosition());
             }
         });
         queryButton.addActionListener(new ActionListener() {
@@ -238,28 +276,75 @@ public class QueryBuilderGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(index[0]) {
-
+                    String selected = (String)jc.getSelectedItem();
+                    String selectedArea = area.getText();
+                    String selectedOP = (String)operatorsBox.getSelectedItem();
+                    painelInsercaoDeDadosAux.removeAll();
+                    queryArea.insert(selected + " : " + "{ " + selectedOP + ":" + selectedArea + " }",queryArea.getCaretPosition());
                 }
                 else if(index[1]) {
+                    String selected = (String)jc.getSelectedItem();
+                    String selectedOP = (String)operatorsBox.getSelectedItem();
+                    Vector<String> s1 = new Vector<>();
+                    for( JTextArea s : areaVec) {
+                        s1.add(s.getText());
+                    }
+                    painelInsercaoDeDadosAux.removeAll();
 
+                    queryArea.insert(selected + " : " + "{ " + selectedOP + ":" +" [" + s1.firstElement(),queryArea.getCaretPosition());
+                    s1.remove(0);
+                    for(String s : s1) {
+                        queryArea.insert("," + s,queryArea.getCaretPosition());
+                    }
+                    queryArea.insert("]" + " }",queryArea.getCaretPosition());
                 }
                 else if(index[2]) {
+                    int counter = Integer.parseInt(argCounter.getText());
+                    String selectedOP = (String)operatorsBox.getSelectedItem();
 
+                    painelInsercaoDeDadosAux.removeAll();
+
+                    queryArea.insert(selectedOP + ":" + "[ { }",queryArea.getCaretPosition());
+                    for( int i =0; i < counter-1; i ++) {
+                        queryArea.insert(",{ }",queryArea.getCaretPosition());
+                    }
+                    queryArea.insert("] ",queryArea.getCaretPosition());
                 }
                 else if(index[3]) {
-
+                    // not implemented
                 }
                 else if(index[4]) {
+                    String selected = (String)jc.getSelectedItem();
+                    String selectedOP = (String)operatorsBox.getSelectedItem();
+                    String option = (String)jcbExists.getSelectedItem();
+                    painelInsercaoDeDadosAux.removeAll();
+                    queryArea.insert(selected + " : " + "{ " + selectedOP + ":" + option + " }",queryArea.getCaretPosition());
 
                 }
                 else if(index[5]) {
-
+                    String selected = (String)jc.getSelectedItem();
+                    String selectedOP = (String)operatorsBox.getSelectedItem();
+                    String option = (String)jcbExists.getSelectedItem();
+                    painelInsercaoDeDadosAux.removeAll();
+                    queryArea.insert(selected + " : " + "{ " + selectedOP + ":" + "\"" + option + "\"" + " }",queryArea.getCaretPosition());
                 }
-                String selected = (String)jc.getSelectedItem();
-                String selectedArea = area.getText();
-                String selectedOP = (String)operatorsBox.getSelectedItem();
-                painelInsercaoDeDadosAux.removeAll();
-                queryArea.insert(selected + " : " + "{" + selectedOP + ":" + selectedArea + " }",queryArea.getCaretPosition());
+
+                j.setVisible(true);
+            }
+        });
+
+        executeOperatorAux.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int counter = Integer.parseInt(argCounter.getText());
+                JLabel l3 = new JLabel("Escolha quais valores");
+                painelInsercaoDeDadosAux.add(l3);
+
+                for( int i =0; i < counter; i ++) {
+                    areaVec.add(new JTextArea(1,5));
+                    painelInsercaoDeDadosAux.add(areaVec.elementAt((i)));
+                }
+                painelInsercaoDeDadosAux.add(executeOperator);
                 j.setVisible(true);
             }
         });
@@ -268,9 +353,6 @@ public class QueryBuilderGUI {
 
     public static void main(String[] args) {
         QueryBuilderGUI q = new QueryBuilderGUI();
-        //DBObject query = (DBObject) JSON.parse("{name:{$exists:true}}");
-        //c.selectFields("LE01ESTADO");
-
 
     }
 }

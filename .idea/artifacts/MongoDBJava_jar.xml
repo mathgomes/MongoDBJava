@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MongoDBJava:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MongoDBJava_jar</output-path>
+    <root id="archive" name="MongoDBJava.jar">
+      <element id="module-output" name="MongoDBJava" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/ojdbc14.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dist/lib/mongodb-driver-3.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dist/lib/bson-3.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dist/lib/mongodb-driver-core-3.0.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

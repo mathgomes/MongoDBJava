@@ -74,6 +74,7 @@ public class MongoConnection {
         Set<String> tempSet;
         while (cursor.hasNext()) {       /*ineficiente para colecoes muito grandes*/
             tempSet = cursor.next().keySet();
+
             for (String s : tempSet)
                 allFields.add(s);
         }

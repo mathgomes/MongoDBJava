@@ -2,3 +2,34 @@ Especificações do projeto
 -	Linguagem utilizada: Java
 -	Versão JDK: 1.8.0_91(Java 8)
 -	IDE utilizda: Intellij IDEA 2016.2.4
+
+Para o exercício 1:
+Execute a classe "main" no projeto.
+O arquivo CRUD.txt contém o resultado
+
+Para o exercício 3:
+O arquivo ScripValidator.txt contém o resultado
+
+Para o exercicio 4:
+Execute o .jar "MongoDBJava" localizado em 
+MongoDBJava/out/artifacts/MongoDBJava_jar
+
+Instruções para o exercício 4:
+
+Ao ser executado, um wizard aparecerá na tela.
+Para consultas sem operações sem filtros :
+1 - Selecione a tabela onde se deseja realizar a consulta
+2 - clique no botão "add Collection"
+3 - Clique no botão "execute"
+
+Para consultas sem operações com filtros :
+1 - Coloque o cursor da JtextArea Query onde
+se deseja adicionar um filtro.
+2 - Selecione a tabela onde se deseja realizar a consulta
+3 - clique no botão "add Collection"
+4 - Selecione o operador que deseja adicionar
+5 - Clique no botão "add Operator"
+6 - Escolha os atributos ou valores pertinentes àquele operador
+7 - clique no botão "Apply"
+8 - Observe se o esqueleto do operador apareceu corretamente na query
+9 - Clique no botão "Execute"
