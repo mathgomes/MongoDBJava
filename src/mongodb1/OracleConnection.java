@@ -107,10 +107,10 @@ public class OracleConnection {
             for (int i = 1; i <= columnCount; i++) {
                 columnNames.add(metaData.getColumnName(i));
             }
-
+            /*
             for(String a : columnNames) {
                 System.out.println(a);
-            }
+            }*/
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }

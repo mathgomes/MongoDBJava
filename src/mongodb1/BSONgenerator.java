@@ -12,25 +12,28 @@ import java.util.Vector;
 
 public class BSONgenerator {
 
-    private FileWriter writer;
+    private FileWriter writer1;
+    private FileWriter writer2;
 
     public BSONgenerator() {
         File file = new File("CRUD.txt");
+        File file2 = new File("Indexes.txt");
         try {
             file.createNewFile();
-            writer = new FileWriter(file);
-            writer.write("use eleicoes\n");
+            file2.createNewFile();
+            writer1 = new FileWriter(file);
+            writer1.write("use eleicoes\n");
+            writer2 = new FileWriter(file2);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // creates a FileWriter Object
 
     }
 
     public void init(String name) {
         try {
-            writer.write("db.createCollection(\""+ name +"\")\n");
+            writer1.write("db.createCollection(\""+ name +"\")\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,12 +44,12 @@ public class BSONgenerator {
         try {
 
             while(rs.next()) {
-                writer.write("db." + name + ".insert(");
+                writer1.write("db." + name + ".insert(");
                 tuple_to_BSON_aux(rs,pkSize);
-                writer.write(")\n");
+                writer1.write(")\n");
             }
-            writer.write("\n");
-            writer.flush();
+            writer1.write("\n");
+            writer1.flush();
 
         } catch (SQLException | IOException e) {
             e.printStackTrace();
@@ -72,34 +75,35 @@ public class BSONgenerator {
             }
         }
         int j = 1;
-        writer.write("{");
-        writer.write("_id:");
+        writer1.write("{");
+        writer1.write("_id:");
         if(pkSize == 1) {
-            writer.write(rsTypes.get(0));
+            writer1.write(rsTypes.get(0));
             j++;
         }
         else {
-            writer.write("{");
+            writer1.write("{");
             for( j = 1; j <= pkSize; j ++) {
-                writer.write(metaData.getColumnName(j) + ":");
-                writer.write(rsTypes.get(j-1));
+                writer1.write(metaData.getColumnName(j) + ":");
+                writer1.write(rsTypes.get(j-1));
 
-                if( j < pkSize) writer.write(",");
+                if( j < pkSize) writer1.write(",");
             }
-            writer.write("}");
+            writer1.write("}");
         }
-        writer.write(",");
+        writer1.write(",");
         for( int i = j; i <= size; i ++) {
             if(Objects.equals(rsTypes.get(i - 1), "\"" + "null" + "\"")) continue;
-            writer.write(metaData.getColumnName(i) + ":");
-            writer.write(rsTypes.get(i-1));
+            writer1.write(metaData.getColumnName(i) + ":");
+            writer1.write(rsTypes.get(i-1));
 
-            if( i < size) writer.write(",");
+            if( i < size) writer1.write(",");
         }
-        writer.write("}");
+        writer1.write("}");
     }
 
-    public void IndexCreation(String tabela, String[] chaves) {
+    public void IndexCreation(String tabela, String[] chaves) throws IOException {
+
         if(chaves.length == 0)
             return;
 
@@ -120,6 +124,7 @@ public class BSONgenerator {
         } else
             command = command + " } )";
 
-        System.out.println(command);
+        writer2.write(command + "\n");
+        writer2.flush();
     }
 }

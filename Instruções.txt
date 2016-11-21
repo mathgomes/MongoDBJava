@@ -1,0 +1,4 @@
+Especificações do projeto
+-	Linguagem utilizada: Java
+-	Versão JDK: 1.8.0_91(Java 8)
+-	IDE utilizda: Intellij IDEA 2016.2.4

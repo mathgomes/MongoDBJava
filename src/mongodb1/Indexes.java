@@ -1,14 +1,10 @@
 package mongodb1;
 import java.util.Vector;
-/**
- * Created by Sabrina Faceroli on 15/11/2016.
- */
+
 public class Indexes {
 
-    public void criarIndexes(){
+    public void criarIndexes(BSONgenerator gen, OracleConnection o){
         try{
-            OracleConnection o = new OracleConnection();
-            BSONgenerator gen = new BSONgenerator();
 
             String[] chaves;
             Vector<String> tabelas;
