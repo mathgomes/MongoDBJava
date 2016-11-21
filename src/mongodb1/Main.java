@@ -6,12 +6,12 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            Indexes indice = new Indexes();
-            indice.criarIndexes();
+//            Indexes indice = new Indexes();
+//            indice.criarIndexes();
             //MongoConnection c = new MongoConnection();
             OracleConnection o = new OracleConnection();
             BSONgenerator gen = new BSONgenerator();
-
+            gen.insertRandomTuples(2);
             o.displayTableNames();
             String name;
             int pkNum;
