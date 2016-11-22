@@ -6,22 +6,27 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-//            Indexes indice = new Indexes();
-//            indice.criarIndexes();
+
             MongoConnection c = new MongoConnection();
             OracleConnection o = new OracleConnection();
             BSONgenerator gen = new BSONgenerator();
-            c.connect();
-            c.insertRandomTuples(100000);
+            // Exercicio 5
+            c.connect("testManyTuples");
+            c.insertRandomTuples(100);
 
             long startTime = System.nanoTime();
-            c.searchRandomTuples(100000);
+            c.searchRandomTuples(100);
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
             System.out.println("Search: " + duration);
             c.eraseTestDB();
 
-            //o.displayTableNames();
+            // Exercicio 1 e 2
+            c.connect("eleicoes");
+
+            Indexes indice = new Indexes();
+            indice.criarIndexes(gen,o);
+            o.displayTableNames();
             String name;
             int pkNum;
             ResultSet rs;

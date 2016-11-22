@@ -139,7 +139,7 @@ public class QueryBuilderGUI {
         j.setVisible(true);
 
         c = new MongoConnection();
-        if( c.connect() ) {
+        if( c.connect("eleicoes") ) {
             c.displayCollectionNames(tableNamesBox);
         }
         this.DefineEventos();

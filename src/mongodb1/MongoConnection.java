@@ -22,14 +22,14 @@ public class MongoConnection {
     private DB db;
     private MongoClient mongo;
     private BasicDBObject Cache[];
-    private int MAX_CACHE = 100000;
-    public void connect() {
+    private int MAX_CACHE = 100;
 
-    public boolean connect() {
+
+    public boolean connect(String name) {
 
         //Connect
         mongo = new MongoClient();
-        db = mongo.getDB("testManyTuples");
+        db = mongo.getDB(name);
 
         List<String> dbs = mongo.getDatabaseNames();
         System.out.println("database " + dbs);
