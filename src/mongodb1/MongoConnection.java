@@ -1,25 +1,35 @@
 package mongodb1;
 
 import com.mongodb.*;
+import com.mongodb.CommandResult;
 
 import com.mongodb.util.JSON;
 import org.bson.Document;
+import sun.applet.resources.MsgAppletViewer_zh_CN;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.*;
-
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Random;
+import java.text.SimpleDateFormat;
 
 public class MongoConnection {
 
     private DB db;
     private MongoClient mongo;
+    private BasicDBObject Cache[];
+    private int MAX_CACHE = 100000;
+    public void connect() {
 
     public boolean connect() {
 
         //Connect
         mongo = new MongoClient();
-        db = mongo.getDB("eleicoes");
+        db = mongo.getDB("testManyTuples");
 
         List<String> dbs = mongo.getDatabaseNames();
         System.out.println("database " + dbs);
@@ -98,4 +108,93 @@ public class MongoConnection {
 
     }
 
+
+    public void searchRandomTuples(int numOfSearches) {
+        DBCollection datab = db.getCollection("testManyTuples");
+        Random rd = new Random();
+        int i;
+
+        for (i = 0; i < numOfSearches; i++) {
+            BasicDBObject query = new BasicDBObject();
+            query.put("id", Cache[rd.nextInt(MAX_CACHE)].get("id"));
+           /* DBCursor cursor = */datab.find(query);
+           /* while(cursor.hasNext()) {
+                System.out.println(cursor.next());
+            }*/
+        }
+    }
+
+    public void insertRandomTuples(int numOfTuples) {
+        DBCollection datab = db.getCollection("testManyTuples");
+        BasicDBObject document;
+        int i;
+        int countCache = 0;
+        SimpleDateFormat formatarDate = new SimpleDateFormat("ddMMyyHHmms.SSS");
+        Cache = new BasicDBObject[MAX_CACHE];
+        long duration = 0;
+
+        //CRIANDO O INDEX
+        datab.createIndex(new BasicDBObject("id", 1), new BasicDBObject("unique", true));
+
+        for (i = 0; i < numOfTuples; i++) {
+            if (countCache < MAX_CACHE) {
+                document = new BasicDBObject();
+                Date data = new Date(System.currentTimeMillis());
+                document.put("id", formatarDate.format(data));
+                document.put("attr1", randomString(2000));
+                document.put("attr2", randomString(2000));
+                document.put("attr3", randomString(2000));
+                document.put("attr4", randomString(2000));
+                document.put("attr5", randomString(2000));
+                document.put("attr6", randomString(2000));
+                document.put("attr7", randomString(2000));
+                document.put("attr8", randomString(2000));
+                document.put("attr9", randomString(2000));
+                document.put("attr10", randomString(2000));
+
+                Cache[countCache] = document;
+                countCache++;
+            } else {
+                document = new BasicDBObject();
+                Date data = new Date(System.currentTimeMillis());
+                document.put("id", formatarDate.format(data));
+                document.put("attr1", randomString(2000));
+                document.put("attr2", randomString(2000));
+                document.put("attr3", randomString(2000));
+                document.put("attr4", randomString(2000));
+                document.put("attr5", randomString(2000));
+                document.put("attr6", randomString(2000));
+                document.put("attr7", randomString(2000));
+                document.put("attr8", randomString(2000));
+                document.put("attr9", randomString(2000));
+                document.put("attr10", randomString(2000));
+            }
+
+            long startTime = System.nanoTime();
+            datab.insert(document);
+            long endTime = System.nanoTime();
+            duration = duration + (endTime - startTime);
+        }
+
+        System.out.println("Insert: " + duration);
+    }
+
+    public String randomString(int size){
+        int i;
+        String t;
+        t = "1";
+        Random rd = new Random();
+        for (i = 1; i < size; i++) {
+            t = t + rd.nextInt(9);
+        }
+        return t;
+    }
+
+    public void eraseTestDB() {
+        DBCollection datab = db.getCollection("testManyTuples");
+        DBCursor cursor = datab.find();
+        while (cursor.hasNext()) {
+            datab.remove(cursor.next());
+        }
+    }
 }

@@ -8,11 +8,20 @@ public class Main {
         try {
 //            Indexes indice = new Indexes();
 //            indice.criarIndexes();
-            //MongoConnection c = new MongoConnection();
+            MongoConnection c = new MongoConnection();
             OracleConnection o = new OracleConnection();
             BSONgenerator gen = new BSONgenerator();
-            gen.insertRandomTuples(2);
-            o.displayTableNames();
+            c.connect();
+            c.insertRandomTuples(100000);
+
+            long startTime = System.nanoTime();
+            c.searchRandomTuples(100000);
+            long endTime = System.nanoTime();
+            long duration = (endTime - startTime);
+            System.out.println("Search: " + duration);
+            c.eraseTestDB();
+
+            //o.displayTableNames();
             String name;
             int pkNum;
             ResultSet rs;
@@ -24,8 +33,6 @@ public class Main {
                 gen.init(name);
                 gen.tuple_to_BSON(rs,name,pkNum);
             }
-
-
         } catch (Exception e) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
